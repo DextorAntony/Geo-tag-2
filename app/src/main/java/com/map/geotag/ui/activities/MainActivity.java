@@ -733,7 +733,7 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
             case R.id.Edit:{
-                Intent intent = new Intent(MainActivity.this, PlacesPluginActivity.class);
+                Intent intent = new Intent(MainActivity.this, weather.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }

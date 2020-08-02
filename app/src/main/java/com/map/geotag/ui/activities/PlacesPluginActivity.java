@@ -82,8 +82,8 @@ public class PlacesPluginActivity extends AppCompatActivity implements OnMapRead
                 addUserLocations();
 
                 // Add the symbol layer icon to map for future use
-                style.addImage(symbolIconId, BitmapFactory.decodeResource(
-                        PlacesPluginActivity.this.getResources(), R.drawable.ic_launcher_background));
+//                style.addImage(symbolIconId, BitmapFactory.decodeResource(
+                      //  PlacesPluginActivity.this.getResources(), R.drawable.ic_launcher_background));
 
                 // Create an empty GeoJSON source using the empty feature collection
                 setUpSource(style);
