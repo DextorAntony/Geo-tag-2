@@ -5,7 +5,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.map.geotag"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -40,6 +40,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.0'
     testImplementation 'junit:junit:4.12'
     implementation 'com.jakewharton.timber:timber:4.7.1'
+    implementation 'org.adblockplus:adblock-android-webview:3.14'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.0.0'
     implementation 'com.google.android.gms:play-services:12.0.1'
     implementation 'com.amitshekhar.android:debug-db:1.0.0'

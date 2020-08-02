@@ -38,11 +38,12 @@ private  TextView tv;
         final SQLiteDatabase db = geoTagDBHandler.getReadableDatabase();final SQLiteDatabase dbw = geoTagDBHandler.getWritableDatabase();
 
 
-Cursor cursor = db.rawQuery("select id from employee where id = 3",null);
-Cursor cursor1 = db.rawQuery("select address from employee where id = 3",null);
-Cursor cursor2 = db.rawQuery("select latitude,longitude from employee where id = 3",null);
-        Cursor cursor3 = db.rawQuery("select file from employee where id = 3",null);
+Cursor cursor = db.rawQuery("select id from employee where id = 1",null);
+Cursor cursor1 = db.rawQuery("select address from employee where id = 1",null);
+Cursor cursor2 = db.rawQuery("select latitude,longitude from employee where id = 1",null);
+        Cursor cursor3 = db.rawQuery("select file from employee where id = 1",null);
     //  Cursor cursor4 = db.rawQuery("select AnimalN from employee where id = 1",null);
+        Cursor cursor5 = db.rawQuery("PRAGMA journal_mode = WAL;", null);
     if (cursor!=null){
 cursor1.moveToFirst();
         cursor.moveToFirst();
@@ -82,9 +83,9 @@ cursor1.moveToFirst();
 
         Button button = findViewById(R.id.button3);
 
-        @SuppressLint("CutPasteId") EditText add = findViewById(R.id.time1);
+            EditText  add = findViewById(R.id.time1);
 
-         final String up = add.getText().toString();
+        final String up = add.getText().toString();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,8 +96,9 @@ cursor1.moveToFirst();
                     e.printStackTrace();
                 }
                 ContentValues cv = new ContentValues();
-cv.put(Location.KEY_ID,up);
-dbw.update(Location.TABLE_NAME,cv,"id=?",new String[]{"1"});
+                cv.put(Location.KEY_ADDRESS, "up");
+                dbw.update(Location.TABLE_NAME, cv, Location.KEY_ADDRESS + "= ?", new String[] {"1"});
+
 
             }
         });

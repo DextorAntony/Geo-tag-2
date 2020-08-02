@@ -493,7 +493,7 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
             case R.id.Edit:{
-                Intent intent = new Intent(MainActivity.this, Update.class);
+                Intent intent = new Intent(MainActivity.this, weather.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
@@ -510,8 +510,10 @@ public class MainActivity extends AppCompatActivity
                 }
             case R.id.maptypeNORMAL:
                 if(map != null){
-                    map.setStyle(Style.LIGHT);
-                    return true;
+                    map.setStyle(new Style.Builder().fromUrl("mapbox://styles/accuweather-inc/cjknc24na2o5u2sqoy0t8ku8a"));
+
+
+
                 }
             case R.id.maptypeSATELLITE:
                 if(map != null){

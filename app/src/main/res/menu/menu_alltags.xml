@@ -10,7 +10,7 @@
         android:title="Geo - Tag History" />
     <item
         android:id="@+id/Edit"
-        android:title="EDIT"/>
+        android:title="Weather"/>
     <item
         android:id="@+id/maptype"
         android:orderInCategory="100"
