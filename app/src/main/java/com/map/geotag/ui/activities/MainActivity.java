@@ -3,12 +3,14 @@ package com.map.geotag.ui.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.ConnectivityManager;
@@ -38,6 +40,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.gson.JsonObject;
 import com.map.geotag.R;
 import com.map.geotag.database.dao.LocationDAO;
 import com.map.geotag.database.dbhandler.GeoTagDBHandler;
@@ -46,6 +49,10 @@ import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.DirectionsCriteria;
 import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -67,6 +74,10 @@ import com.mapbox.mapboxsdk.offline.OfflineRegion;
 import com.mapbox.mapboxsdk.offline.OfflineRegionError;
 import com.mapbox.mapboxsdk.offline.OfflineRegionStatus;
 import com.mapbox.mapboxsdk.offline.OfflineTilePyramidRegionDefinition;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import com.opencsv.CSVWriter;
 
 import org.json.JSONObject;
@@ -80,12 +91,48 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.view.View;
+
+import com.google.gson.JsonObject;
+import com.mapbox.api.geocoding.v5.models.CarmenFeature;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Point;
+
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.camera.CameraPosition;
+import com.mapbox.mapboxsdk.camera.CameraUpdateFactory;
+import com.mapbox.mapboxsdk.geometry.LatLng;
+import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.mapbox.mapboxsdk.maps.Style;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.PlaceAutocomplete;
+import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
+import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
+import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 import static android.media.MediaRecorder.VideoSource.CAMERA;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 import static java.lang.Double.parseDouble;
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback {
-
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final int PERMISSION_REQ_CODE_CAMERA = 1;
     private boolean isEndNotified;
     private int regionSelected;
@@ -94,6 +141,10 @@ public class MainActivity extends AppCompatActivity
     private SQLiteDatabase sqLiteDatabase;
     private Mapbox mMap;
     private Marker marker;
+    private CarmenFeature home;
+    private CarmenFeature work;
+    private String geojsonSourceLayerId = "geojsonSourceLayerId";
+    private String symbolIconId = "symbolIconId";
     private String pictureImagePath = "";
     private ArrayList<Location> locations;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -157,6 +208,11 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onStyleLoaded(@NonNull Style style) {
+                initSearchFab();
+
+                addUserLocations();
+                setUpSource(style);
+                setupLayer(style);
                 enableLocationComponent(style);
 
                 // Assign progressBar for later use
@@ -168,6 +224,7 @@ public class MainActivity extends AppCompatActivity
                 // Bottom navigation bar button clicks are handled here.
                 // Download offline button
                 downloadButton = findViewById(R.id.download_button);
+
                 downloadButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -413,7 +470,58 @@ public class MainActivity extends AppCompatActivity
 //        private void takePhotoFromCamera () {
 //
 //        }}
-            }});}
+            }
+
+
+            private void initSearchFab() {
+                findViewById(R.id.fab_location_search).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new PlaceAutocomplete.IntentBuilder()
+                                .accessToken(Mapbox.getAccessToken() != null ? Mapbox.getAccessToken() : getString(R.string.access_token))
+                                .placeOptions(PlaceOptions.builder()
+                                        .backgroundColor(Color.parseColor("#EEEEEE"))
+                                        .limit(10)
+                                        .addInjectedFeature(home)
+                                        .addInjectedFeature(work)
+                                        .build(PlaceOptions.MODE_CARDS))
+                                .build(MainActivity.this);
+                        startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE);
+                    }
+                });
+            }
+            private void addUserLocations() {
+                home = CarmenFeature.builder().text("Mapbox SF Office")
+                        .geometry(Point.fromLngLat(-122.3964485, 37.7912561))
+                        .placeName("50 Beale St, San Francisco, CA")
+                        .id("mapbox-sf")
+                        .properties(new JsonObject())
+                        .build();
+
+                work = CarmenFeature.builder().text("Mapbox DC Office")
+                        .placeName("740 15th Street NW, Washington DC")
+                        .geometry(Point.fromLngLat(-77.0338348, 38.899750))
+                        .id("mapbox-dc")
+                        .properties(new JsonObject())
+                        .build();
+            }
+            private void setUpSource(@NonNull Style loadedMapStyle) {
+                loadedMapStyle.addSource(new GeoJsonSource(geojsonSourceLayerId));
+            }
+
+            private void setupLayer(@NonNull Style loadedMapStyle) {
+                loadedMapStyle.addLayer(new SymbolLayer("SYMBOL_LAYER_ID", geojsonSourceLayerId).withProperties(
+                        iconImage(symbolIconId),
+                        iconOffset(new Float[] {0f, -8f})
+                ));
+            }
+
+
+
+        });}
+
+
+
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
 // Check if permissions are enabled and if not request
         if (PermissionsManager.areLocationPermissionsGranted(getApplicationContext())) {
@@ -456,26 +564,54 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult ( int requestCode, int resultCode, Intent data){
             //super.onActivityResult(requestCode, resultCode, data);
             super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == CAMERA && resultCode == RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE ) {
 
-                File imgFile = new File(pictureImagePath);
+            // Retrieve selected location's CarmenFeature
+            CarmenFeature selectedCarmenFeature = PlaceAutocomplete.getPlace(data);
 
+            // Create a new FeatureCollection and add a new Feature to it using selectedCarmenFeature above.
+            // Then retrieve and update the source designated for showing a selected location's symbol layer icon
 
-                if (imgFile.exists() && currLocation != null) {
-                    currLocation.setFile(pictureImagePath);
-                    LocationDAO locationDAO = new LocationDAO(MainActivity.this);
-                    locationDAO.insert(currLocation);
-                    if (locations == null) {
-                        locations = new ArrayList<>();
+            if (map != null) {
+                Style style = map.getStyle();
+                if (style != null) {
+                    GeoJsonSource source = style.getSourceAs(geojsonSourceLayerId);
+                    if (source != null) {
+                        source.setGeoJson(FeatureCollection.fromFeatures(
+                                new Feature[] {Feature.fromJson(selectedCarmenFeature.toJson())}));
                     }
-                    locations.add(currLocation);
-                } else {
-                    Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_CANCELED);
-                    finish();
-                }
 
+                    // Move map camera to the selected location
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(
+                            new CameraPosition.Builder()
+                                    .target(new LatLng(((Point) Objects.requireNonNull(selectedCarmenFeature.geometry())).latitude(),
+                                            ((Point) selectedCarmenFeature.geometry()).longitude()))
+                                    .zoom(14)
+                                    .build()), 4000);
+                }
             }
+        }
+        else if (requestCode == CAMERA && resultCode == RESULT_OK) {
+
+            File imgFile = new File(pictureImagePath);
+
+
+            if (imgFile.exists() && currLocation != null) {
+                currLocation.setFile(pictureImagePath);
+                LocationDAO locationDAO = new LocationDAO(MainActivity.this);
+                locationDAO.insert(currLocation);
+                if (locations == null) {
+                    locations = new ArrayList<>();
+                }
+                locations.add(currLocation);
+            } else {
+                Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+
+        }
+
         }
 
     @Override
@@ -493,7 +629,7 @@ public class MainActivity extends AppCompatActivity
                 return false;
             }
             case R.id.Edit:{
-                Intent intent = new Intent(MainActivity.this, weather.class);
+                Intent intent = new Intent(MainActivity.this, PlacesPluginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
