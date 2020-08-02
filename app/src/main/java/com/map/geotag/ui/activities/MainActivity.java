@@ -318,6 +318,7 @@ public class MainActivity extends AppCompatActivity
                             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
                             startActivityForResult(cameraIntent, CAMERA);
 
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -561,7 +562,40 @@ public class MainActivity extends AppCompatActivity
             permissionsManager.requestLocationPermissions(MainActivity.this);
         }
     }
-    protected void onActivityResult ( int requestCode, int resultCode, Intent data){
+
+
+    public void Activity(int requestcode, int resultCode ) {
+        if (requestcode == CAMERA && resultCode == RESULT_OK) {
+
+
+            File imgFile = new File(pictureImagePath);
+
+
+            if (imgFile.exists() && currLocation != null) {
+                currLocation.setFile(pictureImagePath);
+                LocationDAO locationDAO = new LocationDAO(MainActivity.this);
+                locationDAO.insert(currLocation);
+                if (locations == null) {
+                    locations = new ArrayList<>();
+                }
+                locations.add(currLocation);
+            } else {
+                Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+
+
+
+        }
+
+
+
+
+
+    }
+
+    protected void onActivityResult (int requestCode, int resultCode, Intent data){
             //super.onActivityResult(requestCode, resultCode, data);
             super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE ) {
@@ -591,28 +625,29 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-        else if (requestCode == CAMERA && resultCode == RESULT_OK) {
-
-            File imgFile = new File(pictureImagePath);
-
-
-            if (imgFile.exists() && currLocation != null) {
-                currLocation.setFile(pictureImagePath);
-                LocationDAO locationDAO = new LocationDAO(MainActivity.this);
-                locationDAO.insert(currLocation);
-                if (locations == null) {
-                    locations = new ArrayList<>();
-                }
-                locations.add(currLocation);
-            } else {
-                Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_CANCELED);
-                finish();
-            }
+//         if (requestCode == CAMERA && resultCode == RESULT_OK) {
+//
+//            File imgFile = new File(pictureImagePath);
+//
+//
+//            if (imgFile.exists() && currLocation != null) {
+//                currLocation.setFile(pictureImagePath);
+//                LocationDAO locationDAO = new LocationDAO(MainActivity.this);
+//                locationDAO.insert(currLocation);
+//                if (locations == null) {
+//                    locations = new ArrayList<>();
+//                }
+//                locations.add(currLocation);
+//            } else {
+//                Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+//                setResult(RESULT_CANCELED);
+//                finish();
+//            }
+//
+//        }
 
         }
 
-        }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
