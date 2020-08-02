@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">SIH-DS163-DEMO</string>
+    <string name="font_roboto_medium">sans-serif-medium</string>
+    <string name="font_roboto_light">sans-serif-light</string>
+    <string name="font_roboto_regular">sans-serif</string>
+    <string name="font_roboto_black">sans-serif-black</string>
+    <string name="title_activity_splash">Splash</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="dialog_negative_button">No</string>
+    <string name="region_name">region_name</string>
+    <string name="end_progress_success">Download success</string>
+    <string name="navigate_negative_button_title">Cancel</string>
+    <string name="toast_region_deleted">region deleted</string>
+    <string name="navigate_positive_button">Navigate To</string>
+    <string name="navigate_neutral_button_title">Delete</string>
+    <string name="toast_no_regions_yet">no regions yet</string>
+    <string name="navigate_title">Downloaded Regions</string>
+    <string name="previous">Previous</string>
+    <string name="set_region_name_hint">set region name</string>
+    <string name="dialog_title">Download</string>
+    <string name="dialog_message">-</string>
+    <string name="dialog_positive_button">Yes</string>
+    <string name="dialog_toast">dialog_toast</string>
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="db_name">GeoTag</string>
+    <string name="access_token">pk.eyJ1IjoiZXhwbG9yaW5ncHJhdGlrIiwiYSI6ImNqbzEwb2I1aTA2a3YzcWs3azhsOXY3bDcifQ.nr_c1VUl0dnD9IS4FxrVkw</string>
+    <string name="title_activity_example_dialog">ExampleDialog</string>
+</resources>
