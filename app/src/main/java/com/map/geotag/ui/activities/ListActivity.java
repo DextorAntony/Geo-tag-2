@@ -150,7 +150,8 @@ public class ListActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+            setUpView();
+            locationListAdapter.notifyDataSetChanged();
             int pos = viewHolder.getAdapterPosition();
             Bundle ePzl= new Bundle();
             ePzl.putString("key", String.valueOf(pos));

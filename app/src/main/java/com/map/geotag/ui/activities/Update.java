@@ -89,9 +89,13 @@ cursor1.moveToFirst();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbw.execSQL("ALTER TABLE employee ADD COLUMN animal TEXT");
-ContentValues cv = new ContentValues();
-cv.put(Location.KEY_ID,3);
+                try {
+                    dbw.execSQL("ALTER TABLE employee ADD COLUMN animal TEXT");
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                ContentValues cv = new ContentValues();
+cv.put(Location.KEY_ID,up);
 dbw.update(Location.TABLE_NAME,cv,"id=?",new String[]{"1"});
 
             }
