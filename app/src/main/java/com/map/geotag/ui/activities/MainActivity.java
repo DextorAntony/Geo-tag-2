@@ -122,7 +122,8 @@ import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
+import com.mapbox.pluginscalebar.ScaleBarOptions;
+import com.mapbox.pluginscalebar.ScaleBarPlugin;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconOffset;
 import static android.media.MediaRecorder.VideoSource.CAMERA;
@@ -142,6 +143,8 @@ public class MainActivity extends AppCompatActivity
     private Mapbox mMap;
     private Marker marker;
     private CarmenFeature home;
+    private ScaleBarPlugin scaleBarPlugin;
+    private ScaleBarOptions[] listOfScalebarStyleVariations;
     private CarmenFeature work;
     private String geojsonSourceLayerId = "geojsonSourceLayerId";
     private String symbolIconId = "symbolIconId";
@@ -164,6 +167,8 @@ public class MainActivity extends AppCompatActivity
     private OfflineManager offlineManager;
     private OfflineRegion offlineRegion;
     private PermissionsManager permissionsManager;
+    private String[] listOfStyles = new String[] {Style.LIGHT, Style.DARK, Style.SATELLITE_STREETS, Style.OUTDOORS};
+    private int index = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,7 +214,29 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onStyleLoaded(@NonNull Style style) {
                 initSearchFab();
+                scaleBarPlugin = new ScaleBarPlugin(mapView, mapboxMap);
+                initStyling();
+                scaleBarPlugin.create(listOfScalebarStyleVariations[index]);
+                findViewById(R.id.switch_scalebar_style_fab).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
+                        if (index == listOfScalebarStyleVariations.length - 1) {
+                            index = 0;
+                        }
+
+                        mapboxMap.setStyle(listOfStyles[index], new Style.OnStyleLoaded() {
+                            @Override
+                            public void onStyleLoaded(@NonNull Style style) {
+
+                                scaleBarPlugin.create(listOfScalebarStyleVariations[index]);
+
+                            }
+                        });
+
+                        index++;
+
+                    }});
                 addUserLocations();
                 setUpSource(style);
                 setupLayer(style);
@@ -521,7 +548,49 @@ public class MainActivity extends AppCompatActivity
 
         });}
 
+    private void initStyling() {
+        listOfScalebarStyleVariations = new ScaleBarOptions[] {
 
+// Using the plugin's default styling to start
+                new ScaleBarOptions(this),
+
+// Random styling option #2
+                new ScaleBarOptions(this)
+                        .setTextColor(R.color.red)
+                        .setTextSize(40f)
+                        .setBarHeight(15f)
+                        .setBorderWidth(5f)
+                        .setMetricUnit(true)
+                        .setRefreshInterval(15)
+                        .setMarginTop(30f)
+                        .setMarginLeft(16f)
+                        .setTextBarMargin(15f),
+
+// Random styling option #3
+                new ScaleBarOptions(this)
+                        .setTextColor(R.color.mapbox_blue)
+                        .setTextSize(60f)
+                        .setBarHeight(15f)
+                        .setBorderWidth(5f)
+                        .setMetricUnit(true)
+                        .setRefreshInterval(15)
+                        .setMarginTop(30f)
+                        .setMarginLeft(30f)
+                        .setTextBarMargin(25f),
+
+// Random styling option #4
+                new ScaleBarOptions(this)
+                        .setTextColor(R.color.white)
+                        .setTextSize(30f)
+                        .setBarHeight(15f)
+                        .setBorderWidth(5f)
+                        .setMetricUnit(false)
+                        .setRefreshInterval(15)
+                        .setMarginTop(30f)
+                        .setMarginLeft(30f)
+                        .setTextBarMargin(25f),
+        };
+    }
 
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
 // Check if permissions are enabled and if not request
