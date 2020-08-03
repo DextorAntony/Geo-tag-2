@@ -133,7 +133,7 @@ import static java.lang.Double.parseDouble;
 
 public class MainActivity extends AppCompatActivity
         implements OnMapReadyCallback {
-    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 10;
     private static final int PERMISSION_REQ_CODE_CAMERA = 1;
     private boolean isEndNotified;
     private int regionSelected;
@@ -667,9 +667,10 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult (int requestCode, int resultCode, Intent data){
             //super.onActivityResult(requestCode, resultCode, data);
             super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_AUTOCOMPLETE ) {
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if(resultCode == Activity.RESULT_OK){
 
-            // Retrieve selected location's CarmenFeature
+                    // Retrieve selected location's CarmenFeature
             CarmenFeature selectedCarmenFeature = PlaceAutocomplete.getPlace(data);
 
             // Create a new FeatureCollection and add a new Feature to it using selectedCarmenFeature above.
@@ -681,7 +682,7 @@ public class MainActivity extends AppCompatActivity
                     GeoJsonSource source = style.getSourceAs(geojsonSourceLayerId);
                     if (source != null) {
                         source.setGeoJson(FeatureCollection.fromFeatures(
-                                new Feature[] {Feature.fromJson(selectedCarmenFeature.toJson())}));
+                                new Feature[]{Feature.fromJson(selectedCarmenFeature.toJson())}));
                     }
 
                     // Move map camera to the selected location
@@ -693,27 +694,28 @@ public class MainActivity extends AppCompatActivity
                                     .build()), 4000);
                 }
             }
-        }
-//         if (requestCode == CAMERA && resultCode == RESULT_OK) {
-//
-//            File imgFile = new File(pictureImagePath);
-//
-//
-//            if (imgFile.exists() && currLocation != null) {
-//                currLocation.setFile(pictureImagePath);
-//                LocationDAO locationDAO = new LocationDAO(MainActivity.this);
-//                locationDAO.insert(currLocation);
-//                if (locations == null) {
-//                    locations = new ArrayList<>();
-//                }
-//                locations.add(currLocation);
-//            } else {
-//                Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-//                setResult(RESULT_CANCELED);
-//                finish();
-//            }
-//
-//        }
+        }}
+         else   if (requestCode == CAMERA) {
+             if(resultCode == RESULT_OK ){
+
+                     File imgFile = new File(pictureImagePath);
+
+
+                if (imgFile.exists() && currLocation != null) {
+                    currLocation.setFile(pictureImagePath);
+                    LocationDAO locationDAO = new LocationDAO(MainActivity.this);
+                    locationDAO.insert(currLocation);
+                    if (locations == null) {
+                        locations = new ArrayList<>();
+                    }
+                    locations.add(currLocation);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_CANCELED);
+                    finish();
+                }
+
+            }}
 
         }
 
