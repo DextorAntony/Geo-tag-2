@@ -759,9 +759,9 @@ public class MainActivity extends AppCompatActivity
                 }
             case R.id.maptypeNORMAL:
                 if(map != null){
-                    map.setStyle(new Style.Builder().fromUrl("mapbox://styles/accuweather-inc/cjknc24na2o5u2sqoy0t8ku8a"));
+                    map.setStyle(Style.LIGHT);
 
-
+return  true;
 
                 }
             case R.id.maptypeSATELLITE:
@@ -876,6 +876,7 @@ public class MainActivity extends AppCompatActivity
                 //Which column you want to exprort
                 String arrStr[] ={curCSV.getString(0),curCSV.getString(1), curCSV.getString(2),curCSV.getString(3), curCSV.getString(4)};
                 csvWrite.writeNext(arrStr);
+                Toast.makeText(getApplicationContext(),"DATA EXPORTED",Toast.LENGTH_SHORT).show();
             }
             csvWrite.close();
             curCSV.close();

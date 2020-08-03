@@ -102,27 +102,23 @@ cursor1.moveToFirst();
             @SuppressLint("Recycle")
             @Override
             public void onClick(View v) {
-//                try {
-//                    dbw.execSQL("ALTER TABLE employee ADD COLUMN animal_name TEXT");
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-
-                ContentValues contentValues = new ContentValues();
-                contentValues.put("animal_name", add.getText().toString());
                 try {
-                    dbw.enableWriteAheadLogging();
-                    //dbw.insert(Location.TABLE_NAME, null, contentValues);
-                    String sql =
-                            "INSERT or replace INTO employee (id, latitude, longitude, address,file) VALUES('4','0','5000','tran','hi')" ;
-               dbw.execSQL(sql);
-
-                }catch (Exception e) {
+                    dbw.execSQL("ALTER TABLE employee ADD COLUMN ANIMAL TEXT");
+                } catch (SQLException e) {
                     e.printStackTrace();
-
                 }
 
+                Cursor cursor3 = db.rawQuery("select file from employee where id = "+ pos,null);
+                String genID=null;
+                if (cursor!=null){
+                    cursor3.moveToFirst();
+                    int val=Integer.parseInt(cursor3.getString(0));
+                    genID = String.valueOf(val+1);
+                }
+                String sql = "INSERT or replace INTO employee (id, latitude, longitude, address,file) VALUES("+genID+",'0','5000','tran','hi')" ;
+                dbw.execSQL(sql);
 
+                Toast.makeText(getApplicationContext(),"INSERTED",Toast.LENGTH_SHORT).show();
 
 
 
