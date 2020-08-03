@@ -68,6 +68,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         String longi = location.getLongi();
         String date = location.getFile();
     String str = date.substring(date.lastIndexOf("/")+1);
+        String result = str.substring(0, str.lastIndexOf("."));
 //        String year = str.substring(0,4);
 //
 //        String month = str.substring(4, 6);
@@ -89,7 +90,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         }
 
         tvAddress.setText(add);
-        dateiv.setText(str);
+        dateiv.setText(result);
         lat = String.format("%.5f", parseDouble(lat));
         longi = String.format("%.5f", parseDouble(longi));
         tvLatLong.setText(String.format(" \n Latitude : %s, Longitude : %s", lat, longi));

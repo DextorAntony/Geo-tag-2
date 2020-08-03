@@ -60,7 +60,7 @@ cursor1.moveToFirst();
         if(cursor.getCount() > 0 && cursor1.getCount()>0 && cursor2.getCount()>0 && cursor3.getCount()>0){
 // get values from cursor here
 
-            //  String anim = cursor4.getString(0);
+            //String anim = cursor.getString(0);
         String img = cursor3.getString(0);
         String id1 = cursor.getString(0);
         String lat = cursor2.getString(0);
@@ -68,12 +68,16 @@ cursor1.moveToFirst();
         stringBuilder.append(lat).append(longi);
        String address = cursor1.getString(0);
         EditText lati = findViewById(R.id.lat);
+        EditText timecap = findViewById(R.id.timecap);
+            String str = img.substring(img.lastIndexOf("/")+1);
+            String result = str.substring(0, str.lastIndexOf("."));
+        timecap.setText(result);
         String la = lat+","+longi;
         lati.setText(la);
         EditText id = findViewById(R.id.time1);
-        id.setText(id1);
+        id.setText(address);
         EditText time = findViewById(R.id.address);
-      time.setText(address);
+      time.setText(id1);
         ImageView iv = (ImageView) findViewById(R.id.imageView);
 
 
@@ -97,14 +101,25 @@ cursor1.moveToFirst();
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                try {
+//                    dbw.execSQL("ALTER TABLE employee ADD COLUMN animal_name TEXT");
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("animal_name", add.getText().toString());
                 try {
-                    dbw.execSQL("ALTER TABLE employee ADD COLUMN animal TEXT");
-                } catch (SQLException e) {
+                    dbw.enableWriteAheadLogging();
+                    //dbw.insert(Location.TABLE_NAME, null, contentValues);
+                    dbw.rawQuery("INSERT INTO employee (animal_name) VALUES(animal_name) ",new String[Integer.parseInt(pos)]);
+                }catch (Exception e) {
                     e.printStackTrace();
+
                 }
-                ContentValues cv = new ContentValues();
-                cv.put(Location.KEY_ADDRESS, "up");
-                dbw.update(Location.TABLE_NAME, cv, Location.KEY_ADDRESS + "= ?", new String[] {"1"});
+
+
+
 
 
             }
