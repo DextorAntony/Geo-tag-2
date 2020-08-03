@@ -22,6 +22,6 @@ public class forestwebsite extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
 
 
-        mWebView.loadUrl("https://ls1.and.nic.in/doef/");
+        mWebView.loadUrl("http://ls1.and.nic.in/doef/");
     }
 }

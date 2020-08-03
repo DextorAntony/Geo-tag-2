@@ -14,9 +14,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <network-security-config tools:ignore="MissingConstraints">
-        <base-config android:cleartextTrafficPermitted="true">
-            <domain android:includeSubdomains="true">localhost</domain>
-        </base-config>
-    </network-security-config>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,7 @@
         android:id="@+id/taggedplaces"
         android:title="Geo - Tag History" />
     <item
-        android:id="@+id/Edit"
+        android:id="@+id/weat"
         android:title="Weather"/>
     <item
         android:id="@+id/Forestweb"
