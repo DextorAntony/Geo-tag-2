@@ -99,6 +99,7 @@ cursor1.moveToFirst();
         final String up = add.getText().toString();
 
         button.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("Recycle")
             @Override
             public void onClick(View v) {
 //                try {
@@ -112,7 +113,10 @@ cursor1.moveToFirst();
                 try {
                     dbw.enableWriteAheadLogging();
                     //dbw.insert(Location.TABLE_NAME, null, contentValues);
-                    dbw.rawQuery("INSERT INTO employee (animal_name) VALUES(animal_name) ",new String[Integer.parseInt(pos)]);
+                    String sql =
+                            "INSERT or replace INTO employee (id, latitude, longitude, address,file) VALUES('4','0','5000','tran','hi')" ;
+               dbw.execSQL(sql);
+
                 }catch (Exception e) {
                     e.printStackTrace();
 

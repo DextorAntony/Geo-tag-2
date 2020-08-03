@@ -739,6 +739,13 @@ public class MainActivity extends AppCompatActivity
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
             }
+            case R.id.Forestweb:{
+                Intent intent = new Intent(MainActivity.this, forestwebsite.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+
+
             case R.id.maptypeHYBRID:
                 if(map != null){
 
@@ -768,6 +775,53 @@ public class MainActivity extends AppCompatActivity
 
                     return true;
                 }
+            case R.id.police:
+               {
+                   Intent callIntent = new Intent(Intent.ACTION_CALL);
+                   callIntent.setData(Uri.parse("tel:100"));
+                   startActivity(callIntent);
+
+                    return true;
+                }
+            case R.id.Fire:
+                {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:101"));
+                    startActivity(callIntent);
+
+                    return true;
+                }
+
+            case R.id.Ambulance:
+               {
+                   Intent callIntent = new Intent(Intent.ACTION_CALL);
+                   callIntent.setData(Uri.parse("tel:03192 232102"));
+                   startActivity(callIntent);
+
+                    return true;
+                }
+            case R.id.Shipping:
+                {
+
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    callIntent.setData(Uri.parse("tel:03192 245555"));
+                    startActivity(callIntent);
+                    return true;
+                }
+            case R.id.Disater:
+               {
+                   Intent callIntent = new Intent(Intent.ACTION_CALL);
+                   callIntent.setData(Uri.parse("tel:1070/03192 238881"));
+                   startActivity(callIntent);
+
+                    return true;
+                }
+
+
+
+
+
+
 
         }
 

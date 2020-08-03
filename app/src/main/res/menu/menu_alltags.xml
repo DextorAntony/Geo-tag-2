@@ -12,6 +12,9 @@
         android:id="@+id/Edit"
         android:title="Weather"/>
     <item
+        android:id="@+id/Forestweb"
+        android:title="Dept of Forest"/>
+    <item
         android:id="@+id/maptype"
         android:orderInCategory="100"
         app:showAsAction="never"
@@ -33,6 +36,36 @@
 
             </group>
         </menu>
+
+    </item>
+    <item
+        android:id="@+id/emergency"
+        android:title="EMERGENCY"
+        app:showAsAction="never"
+        android:orderInCategory="100">
+<menu>
+    <group android:id="@+id/eme"
+        android:checkableBehavior="single">
+        <item android:id="@+id/police"
+
+            android:title="Police" />
+
+        <item android:id="@+id/Fire"
+
+            android:title="Fire" />
+        <item android:id="@+id/Ambulance"
+
+            android:title="Ambulance" />
+        <item android:id="@+id/Shipping"
+
+            android:title="Shipping" />
+
+        <item android:id="@+id/Disater"
+
+            android:title="Disater" />
+
+    </group>
+</menu>
 
     </item>
 
