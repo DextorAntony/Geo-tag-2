@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -30,20 +31,21 @@ private  TextView tv;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update);
 
-        Bundle p = getIntent().getExtras();
-        String yourPreviousPzl =p.getString("key");
-        Toast.makeText(this, yourPreviousPzl, Toast.LENGTH_LONG).show();
+        Intent mIntent = getIntent();
+        int intValue = mIntent.getIntExtra("intVariableName", 0);
+Toast.makeText(getApplicationContext(),String.valueOf(intValue),Toast.LENGTH_SHORT).show();
 
         GeoTagDBHandler geoTagDBHandler = new GeoTagDBHandler(this);
         final SQLiteDatabase db = geoTagDBHandler.getReadableDatabase();final SQLiteDatabase dbw = geoTagDBHandler.getWritableDatabase();
 
+String pos = String.valueOf(intValue);
 
-Cursor cursor = db.rawQuery("select id from employee where id = 1",null);
-Cursor cursor1 = db.rawQuery("select address from employee where id = 1",null);
-Cursor cursor2 = db.rawQuery("select latitude,longitude from employee where id = 1",null);
-        Cursor cursor3 = db.rawQuery("select file from employee where id = 1",null);
+        Cursor cursor = db.rawQuery("select id from employee where id ="+ pos,null);
+Cursor cursor1 = db.rawQuery("select address from employee where id = "+pos,null);
+Cursor cursor2 = db.rawQuery("select latitude,longitude from employee where id = "+ pos,null);
+        Cursor cursor3 = db.rawQuery("select file from employee where id = "+ pos,null);
     //  Cursor cursor4 = db.rawQuery("select AnimalN from employee where id = 1",null);
-        Cursor cursor5 = db.rawQuery("PRAGMA journal_mode = WAL;", null);
+      //  Cursor cursor5 = db.rawQuery("PRAGMA journal_mode = WAL;", new String[Integer.parseInt(yourPreviousPzl)]);
     if (cursor!=null){
 cursor1.moveToFirst();
         cursor.moveToFirst();
@@ -53,8 +55,12 @@ cursor1.moveToFirst();
     }
     StringBuilder stringBuilder = new StringBuilder();
     do{
+
         assert cursor != null;
-   //  String anim = cursor4.getString(0);
+        if(cursor.getCount() > 0 && cursor1.getCount()>0 && cursor2.getCount()>0 && cursor3.getCount()>0){
+// get values from cursor here
+
+            //  String anim = cursor4.getString(0);
         String img = cursor3.getString(0);
         String id1 = cursor.getString(0);
         String lat = cursor2.getString(0);
@@ -62,18 +68,19 @@ cursor1.moveToFirst();
         stringBuilder.append(lat).append(longi);
        String address = cursor1.getString(0);
         EditText lati = findViewById(R.id.lat);
-        lati.setText(lat);
+        String la = lat+","+longi;
+        lati.setText(la);
         EditText id = findViewById(R.id.time1);
         id.setText(id1);
-        EditText time = findViewById(R.id.time1);
-      //time.setText(anim);
+        EditText time = findViewById(R.id.address);
+      time.setText(address);
         ImageView iv = (ImageView) findViewById(R.id.imageView);
 
 
 
 
         final File imgFile = new File(img);
-        Glide.with(getApplicationContext()).load(imgFile.getAbsolutePath()).into(iv);
+        Glide.with(getApplicationContext()).load(imgFile.getAbsolutePath()).into(iv);}
     }
     while (cursor.moveToNext());
 

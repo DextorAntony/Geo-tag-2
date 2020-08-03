@@ -21,6 +21,7 @@ import com.map.geotag.R;
 import com.map.geotag.database.dbhandler.GeoTagDBHandler;
 import com.map.geotag.model.Location;
 import com.map.geotag.ui.activities.MainActivity;
+import com.map.geotag.ui.activities.Update;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -103,6 +104,7 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         llLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,6 +117,8 @@ public class LocationListAdapter extends RecyclerView.Adapter<LocationListAdapte
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.putExtra("location", location);
                 activity.startActivity(intent);
+
+
             }
         });
     }

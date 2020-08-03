@@ -150,15 +150,13 @@ public class ListActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            int pos = viewHolder.getAdapterPosition();
+            Intent myIntent = new Intent(ListActivity.this, Update.class);
+            myIntent.putExtra("intVariableName", pos);
+            startActivity(myIntent);
             setUpView();
             locationListAdapter.notifyDataSetChanged();
-            int pos = viewHolder.getAdapterPosition();
-            Bundle ePzl= new Bundle();
-            ePzl.putString("key", String.valueOf(pos));
-
-            Intent i = new Intent(ListActivity.this,Update.class);
-            i.putExtras(ePzl);
-            startActivity(i);
         }
     };
 }
